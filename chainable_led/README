@@ -1,0 +1,2 @@
+This is the iotivity simple client app to control the Grove chainable LEDs. The source code is based on the information from the wiki page http://www.seeedstudio.com/wiki/Grove_-_Chainable_RGB_LED. 
+To use, copy the folder to the recipes-apps folder under the meta-oic and build it like any other package using bitbake.
