@@ -1,9 +1,9 @@
 # IoTivity-Arduino-Sensors
 Use the following steps to build the apps
-1. Download the library for the Seeedstudio W5200 Ethernet Shield
+- Download the library for the Seeedstudio W5200 Ethernet Shield
  $ git clone https://github.com/Seeed-Studio/Ethernet_Shield_W5200 <path to iotivity v0.9.1>/extlibs/Ethernet_Shield_W5200
-2. Copy the all the files: fan.cpp, prisensor.cpp, gassensor.cpp, SConscript to <path to iotivity v0.9.1>/resource/csdk/stack/samples/arduino/SimpleClientServer/ocserver/
-3. Move to the iotivity v0.9.1 folder and build
+- Copy the all the files: fan.cpp, prisensor.cpp, gassensor.cpp, SConscript to <path to iotivity v0.9.1>/resource/csdk/stack/samples/arduino/SimpleClientServer/ocserver/
+- Move to the iotivity v0.9.1 folder and build
  $ cd <path to iotivity v0.91>
  $ scons TARGET_OS=arduino TARGET_ARCH=avr BOARD=mega SHIELD=ETH
 
