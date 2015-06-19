@@ -67,8 +67,8 @@ typedef struct {
 static GasResource Gas;
 Observers interestedObservers[MAX_NUM_OBSERVATIONS];
 
-static const char * GATEWAT_DISCOVERY_QUERY = "coap://192.168.1.100:8888/oc/core?rt=gw.sensor";
-static const char * GATEWAT_REGISTER_QUERY = "coap://192.168.1.100:8888/gw/sensor";
+static const char * GATEWAT_DISCOVERY_QUERY = "coap://192.168.1.100:5683/oc/core?rt=gw.sensor";
+static const char * GATEWAT_REGISTER_QUERY = "coap://192.168.1.100:5683/gw/sensor";
 //static const char * GATEWAT_DISCOVERY_QUERY = "coap://224.0.1.187:5683/oc/core?rt=gw.sensor";
 
 /// This is the port which Arduino Server will use for all unicast communication with it's peers
@@ -475,7 +475,7 @@ OCStackApplicationResult discoveryReqCB(void* ctx, OCDoHandle handle,
             cbData.cd = NULL;
 
             ret = OCDoResource(&handle, OC_REST_PUT, GATEWAT_REGISTER_QUERY, 0,
-                       jsonPayload,
+                       jsonPayload, OC_IPV4,
                        OC_LOW_QOS, &cbData, NULL, 0);
 
            if (ret != OC_STACK_OK)
@@ -503,7 +503,7 @@ OCStackResult registerGasResource()
     cbData.cb = discoveryReqCB;
     cbData.context = (void*)DEFAULT_CONTEXT_VALUE;
     cbData.cd = NULL;
-    ret = OCDoResource(&handle, OC_REST_GET, GATEWAT_DISCOVERY_QUERY, 0, 0, OC_LOW_QOS, &cbData, NULL, 0);
+    ret = OCDoResource(&handle, OC_REST_GET, GATEWAT_DISCOVERY_QUERY, 0, 0, OC_IPV4, OC_LOW_QOS, &cbData, NULL, 0);
     if (ret != OC_STACK_OK)
     {
     	Serial.println("Discovery failed");
