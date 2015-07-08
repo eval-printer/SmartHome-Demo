@@ -18,7 +18,7 @@ IoTivityDialog::IoTivityDialog(QWidget *parent)
 {
     this->resize(IoTivity::DEMO_WIDTH, IoTivity::DEMO_HEIGHT);
 
-    m_title = new QLabel(tr("IoTivity on Tizen Demo"), this);
+    m_title = new QLabel(tr("IoTivity Demo"), this);
     m_title->setAlignment(Qt::AlignCenter);
 
     QFont title_font;

@@ -2,6 +2,7 @@
 #include "OCPlatform.h"
 #include "IoTivity.h"
 #include "IoTivityClient.h"
+#include "octypes.h"
 
 namespace IoTivity
 {
@@ -22,7 +23,7 @@ namespace IoTivity
                 /* 'key' is added */
                 std::cout << "Added resource " << type << std::endl;
                 rep.getValue(key, sensorUri);
-                OC::OCPlatform::findResource("", sensorUri, foundResource);
+                OC::OCPlatform::findResource("", sensorUri, ::OC_ALL, foundResource);
             }
         }
         else
@@ -190,7 +191,7 @@ namespace IoTivity
             // makes it so that all boolean values are printed as 'true/false' in this stream
             std::cout.setf(std::ios::boolalpha);
             // Find all resources
-            OC::OCPlatform::findResource("", "coap://" + host + "/oc/core?rt=" + resourceType, foundResource);
+            OC::OCPlatform::findResource("", "coap://" + host + "/oc/core?rt=" + resourceType, ::OC_ALL, foundResource);
             std::cout<< "Finding Resource... " <<std::endl;
         }
         catch (OC::OCException& e)
@@ -199,7 +200,7 @@ namespace IoTivity
         }
     }
 
-    std::shared_ptr< OC::OCResource > IoTivityClient::lookupSensor(string sensorUri) const
+    std::shared_ptr< OC::OCResource > IoTivityClient::lookupSensor(std::string sensorUri) const
     {
         std::list< std::shared_ptr< OC::OCResource > >::const_iterator iter;
 
