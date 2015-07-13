@@ -18,7 +18,7 @@ INCLUDEPATH += $$(HOME)/Downloads/iotivity-0.9.1/resource/csdk/stack/include
 INCLUDEPATH += $$(HOME)/Downloads/iotivity-0.9.1/resource/csdk/logger/include
 INCLUDEPATH += $$(HOME)/Downloads/iotivity-0.9.1/resource/oc_logger/include
 
-LIBS += -L$$(HOME)/f/Downloads/iotivity-0.9.1//out/linux/x86_64/release -loc -loctbstack -lcoap -loc_logger
+LIBS += -L$$(HOME)/Downloads/iotivity-0.9.1//out/linux/x86_64/release -loc -loctbstack -lcoap -loc_logger
 
 SOURCES += main.cpp \
     IoTivityDialog.cpp \

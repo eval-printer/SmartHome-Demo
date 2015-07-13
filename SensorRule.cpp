@@ -32,15 +32,19 @@ void SensorRule::setObjectName(const QString &name)
     m_heartRateSelect = new QComboBox(this);
 
     m_densitySelect->insertItems(0, QStringList()
-                                 << QApplication::translate("Dialog", "6", 0)
-                                 << QApplication::translate("Dialog", "7", 0)
-                                 << QApplication::translate("Dialog", "8", 0)
-                                 << QApplication::translate("Dialog", "9", 0)
-                                 << QApplication::translate("Dialog", "10", 0)
-                                 << QApplication::translate("Dialog", "11", 0)
-                                 << QApplication::translate("Dialog", "12", 0));
+                                 << QApplication::translate("Dialog", "30", 0)
+                                 << QApplication::translate("Dialog", "40", 0)
+                                 << QApplication::translate("Dialog", "50", 0)
+                                 << QApplication::translate("Dialog", "60", 0)
+                                 << QApplication::translate("Dialog", "70", 0)
+                                 << QApplication::translate("Dialog", "80", 0)
+                                 << QApplication::translate("Dialog", "90", 0)
+                                 << QApplication::translate("Dialog", "100", 0)
+                                 << QApplication::translate("Dialog", "110", 0)
+                                 << QApplication::translate("Dialog", "120", 0));
 
     m_heartRateSelect->insertItems(0, QStringList()
+                                 << QApplication::translate("Dialog", "80", 0)
                                  << QApplication::translate("Dialog", "90", 0)
                                  << QApplication::translate("Dialog", "100", 0)
                                  << QApplication::translate("Dialog", "110", 0)
