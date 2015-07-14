@@ -21,7 +21,7 @@
 #include "rules_resource.h"
 #include "homegateway.h"
 
-RulesResource::RulesResource() : m_crazyJumping(false), m_kitchenMonitor(false), m_density(7), m_heartRate(95)
+RulesResource::RulesResource() : m_crazyJumping(false), m_kitchenMonitor(false), m_density(70), m_heartRate(95)
 {
 }
 

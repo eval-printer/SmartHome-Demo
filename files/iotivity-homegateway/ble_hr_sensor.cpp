@@ -129,8 +129,8 @@ static void start_observe()
 	hrSensor.notify();
 	char * kk = (char *)att_hr_hdl;
 	cout << "hdl is" << kk << endl;
-	bt_gatt_set_characteristic_changed_cb(att_hr_hdl,
-				_gatt_characteristic_changed_cb, NULL);
+	// bt_gatt_set_characteristic_changed_cb(att_hr_hdl,
+	// 			_gatt_characteristic_changed_cb, NULL);
 }
 
 static void stop_observe()
@@ -139,7 +139,7 @@ static void stop_observe()
 	char * kk = (char *)att_hr_hdl;
 	cout << "hdl is" << kk << endl;
 
-	bt_gatt_unset_characteristic_changed_cb(att_hr_hdl);
+	// bt_gatt_unset_characteristic_changed_cb(att_hr_hdl);
 }
 
 OCEntityHandlerResult BLE_hrSensor::hrEntityHandler(shared_ptr<OCResourceRequest> Request)
@@ -227,7 +227,7 @@ bool bt_gatt_pri_src_cb(bt_gatt_attribute_h service, void *user_data)
 		(bt_device_connection_info_s *)user_data;
 	char *uuid;
 
-	bt_gatt_get_service_uuid(service, &uuid);
+	// bt_gatt_get_service_uuid(service, &uuid);
 
 	cout << "UUID: " << uuid << endl;
 
@@ -254,8 +254,8 @@ void get_hr_att_hdl(bt_device_connection_info_s *conn_info)
 //	if (conn_info->link != BT_DEVICE_CONNECTION_LINK_LE)
 //		return;
 
-	bt_gatt_foreach_primary_services(conn_info->remote_address,
-					bt_gatt_pri_src_cb, conn_info);
+	// bt_gatt_foreach_primary_services(conn_info->remote_address,
+	//				bt_gatt_pri_src_cb, conn_info);
 
 	return;
 }

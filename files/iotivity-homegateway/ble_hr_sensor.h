@@ -33,7 +33,7 @@ using namespace std;
 using namespace OC;
 
 #define BLE_HR_SENSOR_RESOURCE_ENDPOINT "/sensor/heartrate"
-#define BLE_HR_SENSOR_RESOURCE_TYPE "com.intel"
+#define BLE_HR_SENSOR_RESOURCE_TYPE "sensor.heartrate"
 
 void bt_conn_state_changed_cb(bool connected,
 				bt_device_connection_info_s *conn_info,

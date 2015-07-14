@@ -64,7 +64,7 @@ int main ()
 	sigaction(SIGINT, &sa, NULL);
 	cout << "Press Ctrl-C to quit...." << endl;
 
-	bt_initialize();
+	// bt_initialize();
 
 	PlatformConfig cfg
 	{
@@ -84,7 +84,7 @@ int main ()
 
 	rule.registerResource();
 
-	bt_device_set_connection_state_changed_cb(bt_conn_state_changed_cb, &sensor);
+	// bt_device_set_connection_state_changed_cb(bt_conn_state_changed_cb, &sensor);
 
 	loop = g_main_loop_new(NULL, FALSE);
 

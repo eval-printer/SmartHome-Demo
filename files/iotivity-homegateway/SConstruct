@@ -38,10 +38,9 @@ except:
 Adding OIC SDK libs and include files.
 '''
 env.AppendUnique(CPPPATH = [
-                sdk_root + '/usr/include/iotivity/',
-                sdk_root + '/usr/include/iotivity/stack/',
-                sdk_root + '/usr/include/iotivity/ocsocket/',
-                sdk_root + '/usr/include/iotivity/oc_logger/',
+                sdk_root + '/usr/include/iotivity/resource',
+                sdk_root + '/usr/include/iotivity/resource/stack/',
+                sdk_root + '/usr/include/iotivity/resource/oc_logger/',
                 sdk_root + '/usr/include/glib-2.0/',
                 sdk_root + '/usr/lib/glib-2.0/include/',
   ])
@@ -49,7 +48,7 @@ env.AppendUnique(CXXFLAGS = ['-std=c++11', '-Wall'])
 #env.ParseConfig('pkg-config --libs --cflags glib-2.0');
 #env.ParseConfig('pkg-config --libs gio-2.0');
 env.AppendUnique(LIBPATH = [sdk_root + '/usr/lib/'])
-env.AppendUnique(LIBS = ['oc', 'octbstack', 'oc_logger', 'coap', 'glib-2.0', 'gio-2.0', 'gobject-2.0', 'capi-network-bluetooth'])
+env.AppendUnique(LIBS = ['oc', 'octbstack', 'oc_logger', 'coap', 'glib-2.0', 'gio-2.0', 'gobject-2.0'])
 
 Export('env', 'sdk_root')
 

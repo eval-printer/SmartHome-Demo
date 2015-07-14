@@ -93,7 +93,7 @@ void SensorResource::resetStatus()
 }
 
 void SensorResource::registerBle(char *url)
-{
+{/*
 	uint8_t ifname[] = "eth0";
 	uint8_t ipAddr[20];
 	char address[64] = {0};
@@ -102,7 +102,8 @@ void SensorResource::registerBle(char *url)
 	snprintf(address, sizeof(address), "coap://%s:8888/oc/core?rt=com.intel", (char*)ipAddr);
 
 	std::cout << "BLE heart rate address" << address <<std::endl;
-	m_sensorMap.insert(SensorMap::value_type("heartRate", address));
+*/
+	m_sensorMap.insert(SensorMap::value_type("heartRate", BLE_HR_SENSOR_RESOURCE_TYPE));
 	ChangeSensorRepresentation();
 }
 
@@ -287,8 +288,8 @@ void SensorResource::foundResource(std::shared_ptr<OCResource> resource)
 				m_fan.s_resource = resource;
 				m_fan.s_active = true;
 			}
-			else if (resourceURI == "/led_edison") {
-				std::cout << "\tFound Led Device." << std::endl;
+			else if (resourceURI == "/intel/chainable_led_edison") {
+				std::cout << "\tFound Edison Led Device." << std::endl;
 				resource->observe(ObserveType::Observe, QueryParamsMap(), o);
 
 				QueryParamsMap params;
@@ -304,6 +305,9 @@ void SensorResource::foundResource(std::shared_ptr<OCResource> resource)
 				m_pri.s_resource = resource;
 				m_pri.s_active = true;
 			}
+			else {
+				std::cout << "Resource unknown." << std::endl;
+			}
 		}
 		else {
 			std::cout << "Resource is invalid" << std::endl;
@@ -316,8 +320,15 @@ void SensorResource::foundResource(std::shared_ptr<OCResource> resource)
 
 void SensorResource::StartMonitor(std::string address)
 {
-	FindCallback f (std::bind(&SensorResource::foundResource, this, PH::_1));
-	OCPlatform::findResource("", std::string(address), f);
+	std::ostringstream resourceURI;
+	try {
+		resourceURI << OC_MULTICAST_DISCOVERY_URI << "?rt=" << address;
+		FindCallback f (std::bind(&SensorResource::foundResource, this, PH::_1));
+		OCPlatform::findResource("", resourceURI.str(), OC_ALL, f);
+	}
+	catch (OC::OCException& e) {
+		std::cout << "Exception: " << e.what() << " in StartMonitor" << std::endl;
+	}
 }
 
 OCRepresentation SensorResource::get()
@@ -403,10 +414,6 @@ OCEntityHandlerResult SensorResource::entityHandler(std::shared_ptr<OCResourceRe
 		int requestFlag = request->getRequestHandlerFlag();
 		std::cout << "In entity handler for sensors, URI is : "
 			<< request->getResourceUri() << std::endl;
-
-		if (requestFlag & RequestHandlerFlag::InitFlag) {
-			std::cout << "\t\trequestFlag : Init\n";
-		}
 
 		if(requestFlag & RequestHandlerFlag::RequestFlag) {
 			auto pResponse = std::make_shared<OC::OCResourceResponse>();
