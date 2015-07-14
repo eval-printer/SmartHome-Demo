@@ -71,8 +71,8 @@ IoTivityDialog::IoTivityDialog(QWidget *parent)
     changeStyle("Fusion");
 
     /* Use multi-case IP address to find gw.sensor */
-    m_pIoTivityClient->findResource("224.0.1.187", "gw.sensor");
-    m_pIoTivityClient->findResource("224.0.1.187", "gw.rule");
+    m_pIoTivityClient->findResource(OC_MULTICAST_PREFIX, IoTivity::GATEWAY_RULES_TYPE);
+    m_pIoTivityClient->findResource(OC_MULTICAST_PREFIX, IoTivity::GATEWAY_RESOURCE_TYPE);
 }
 
 IoTivityDialog::~IoTivityDialog()

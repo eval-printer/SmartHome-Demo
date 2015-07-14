@@ -17,6 +17,9 @@ namespace IoTivity {
     const int BUTTON_BACKGROUND_COLOR_G = 255;
     const int BUTTON_BACKGROUND_COLOR_B = 255;
 
+    const std::string GATEWAY_RULES_TYPE = "gw.rule";
+    const std::string GATEWAY_RESOURCE_TYPE = "gw.sensor";
+
     const std::string FAN_STATIC_ICON = ":/images/static.png";
     const std::string FAN_WIND_ICON = ":/images/wind.png";
     const std::string HEART_RATE_ICON = ":/images/heartrate.png";

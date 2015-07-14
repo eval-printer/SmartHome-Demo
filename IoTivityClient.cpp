@@ -186,12 +186,14 @@ namespace IoTivity
 
     void IoTivityClient::findResource(const std::string host, const std::string resourceType)
     {
+        std::ostringstream requestURI;
         try
         {
             // makes it so that all boolean values are printed as 'true/false' in this stream
             std::cout.setf(std::ios::boolalpha);
             // Find all resources
-            OC::OCPlatform::findResource("", "coap://" + host + "/oc/core?rt=" + resourceType, ::OC_ALL, foundResource);
+            requestURI << OC_MULTICAST_DISCOVERY_URI << "?rt=" << resourceType;
+            OC::OCPlatform::findResource("", requestURI.str(), OC_ALL, &foundResource);
             std::cout<< "Finding Resource... " <<std::endl;
         }
         catch (OC::OCException& e)
