@@ -38,10 +38,9 @@ except:
 Adding OIC SDK libs and include files.
 '''
 env.AppendUnique(CPPPATH = [
-                sdk_root + '/usr/include/iotivity/',
-                sdk_root + '/usr/include/iotivity/stack/',
-                sdk_root + '/usr/include/iotivity/ocsocket/',
-                sdk_root + '/usr/include/iotivity/oc_logger/',
+                sdk_root + '/usr/include/iotivity/resource',
+                sdk_root + '/usr/include/iotivity/resource/stack',
+                sdk_root + '/usr/include/iotivity/resource/oc_logger',
                 sdk_root + '/usr/include/glib-2.0/',
                 sdk_root + '/usr/lib/glib-2.0/include/',
   ])

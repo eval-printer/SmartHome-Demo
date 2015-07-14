@@ -22,7 +22,6 @@
 #include <thread>
 #include <functional>
 #include "chainable_led_edison.h"
-#include "ocsocket.h"
 #include <unistd.h>
 
 ledEdsn::ledEdsn() : presenceTimer(0), m_setting(0),  inPrecence(false)
@@ -104,10 +103,11 @@ static void foundDiscResource(shared_ptr<OCResource> resource)
 	cout << "\tHost address of the resource: " << hostAddress << endl;
 
 	for(auto &resourceTypes : resource->getResourceTypes()) {
-		cout << "resourceType" << resourceTypes << endl;
+		cout << "resourceType: " << resourceTypes << endl;
 		if( resourceTypes == HG_DISCOVER_RESOUCE_TYPE) {
 
 			OCRepresentation rep;
+			/*
 			uint8_t ifname[] = "eth0";
 			uint8_t ipAddr[20];
 			char address[64] = {0};
@@ -115,8 +115,9 @@ static void foundDiscResource(shared_ptr<OCResource> resource)
 			OCGetInterfaceAddress(ifname, sizeof(ifname), AF_INET, ipAddr, sizeof(ipAddr));
 			snprintf(address, sizeof(address), "coap://%s:5683/oc/core?rt=com.intel", (char*)ipAddr);
 
+			*/
 			rep.setValue("name", string("led"));
-			rep.setValue("address", string(address));
+			rep.setValue("address", string(LED_EDSN_RESOURCE_TYPE));
 			resource->put(rep, QueryParamsMap(), &onRegister);
 			return;
 		}
@@ -127,8 +128,13 @@ static void foundDiscResource(shared_ptr<OCResource> resource)
 
 void ledEdsn::registeration()
 {
+    try {
 	OCPlatform::findResource("",
-		"coap://224.0.1.187/oc/core?rt=gw.sensor", &foundDiscResource);
+		"/oc/core?rt=gw.sensor", OC_ALL, &foundDiscResource);
+    }
+    catch (OCException& e){
+	cout << "Exception in findResource: " << e.what();
+    }
 }
 
 static void onGet(const HeaderOptions& headerOptions,
@@ -171,7 +177,7 @@ static void foundConfResource(shared_ptr<OCResource> resource)
 	cout << "\tHost address of the resource: " << hostAddress << endl;
 
 	for(auto &resourceTypes : resource->getResourceTypes()) {
-		cout << "resourceType" << resourceTypes << endl;
+		cout << "resourceType: " << resourceTypes << endl;
 		if (resourceTypes == HG_CONFIGURATION_RESOUCE_TYPE) {
 			QueryParamsMap test;
 			resource->get(test, &onGet);
@@ -186,8 +192,14 @@ void ledEdsn::configuration()
 {
 	cout << "Start configure Edison Fan" << endl;
 
-	OCPlatform::findResource("",
-		"coap://224.0.1.187/oc/core?rt=gw.config", &foundConfResource);
+	try {
+		OCPlatform::findResource("",
+			"/oc/core?rt=gw.config", OC_ALL, &foundConfResource);
+
+	}
+	catch (OCException& e) {
+		cout << "Exception in findResource of configuration: " << e.what();
+	}
 }
 
 OCRepresentation ledEdsn::getRep()

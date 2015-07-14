@@ -32,8 +32,8 @@
 using namespace std;
 using namespace OC;
 
-#define LED_EDSN_RESOURCE_ENDPOINT "/chainable_led_edison"
-#define LED_EDSN_RESOURCE_TYPE "com.intel"
+#define LED_EDSN_RESOURCE_ENDPOINT "/intel/chainable_led_edison"
+#define LED_EDSN_RESOURCE_TYPE "intel.chainable_led_edison"
 #define HG_DISCOVER_RESOUCE_TYPE "gw.sensor"
 #define HG_CONFIGURATION_RESOUCE_TYPE "gw.config"
 #define PRESENCE_CYCLE 2
