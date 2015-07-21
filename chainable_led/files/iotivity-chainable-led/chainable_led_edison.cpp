@@ -24,7 +24,7 @@
 #include "chainable_led_edison.h"
 #include <unistd.h>
 
-ledEdsn::ledEdsn() : presenceTimer(0), m_setting(0),  inPrecence(false)
+ledEdsn::ledEdsn() : presenceTimer(0), m_setting(0), inPrecence(false), m_ledResource(nullptr)
 {
 	cout << "Running ledEdsn constructor" << endl;
 	m_platformConfig = make_shared<PlatformConfig>(ServiceType::InProc,
@@ -42,6 +42,8 @@ ledEdsn::~ledEdsn()
 
 bool ledEdsn::createResource()
 {
+	if (m_ledResource != nullptr)
+		return false;
 
 	uint8_t resourceFlag = OC_DISCOVERABLE | OC_OBSERVABLE;
 	std::string resourceURI = LED_EDSN_RESOURCE_ENDPOINT; // URI of the resource
@@ -62,14 +64,16 @@ bool ledEdsn::createResource()
 
 void ledEdsn::destroyResource()
 {
-	cout << "Destroy BLE Heart Rate sensor resource" << endl;
-
-	OCStackResult result = OCPlatform::unregisterResource(m_ledResource);
-	if (result != OC_STACK_OK) {
-		cerr << "Could not destroy: " << m_ledResource << endl;
-		return;
-	} else {
-		cout << "Successfully destroy: " << m_ledResource<< endl;
+	cout << "Destroy Edison chainable LED resource" << endl;
+	if (m_ledResource) {
+		OCStackResult result = OCPlatform::unregisterResource(m_ledResource);
+		if (result != OC_STACK_OK) {
+			cerr << "Could not destroy: " << m_ledResource << endl;
+			return;
+		} else {
+			m_ledResource = nullptr;
+			cout << "Successfully destroy: " << m_ledResource<< endl;
+		}
 	}
 }
 
@@ -89,41 +93,34 @@ static void foundDiscResource(shared_ptr<OCResource> resource)
 	string resourceURI;
 	string hostAddress;
 
-	if (!resource) {
-		cout << "Resource is invalid" << endl;
-		return;
-	}
-
-	cout<<"DISCOVERED Resource:"<<endl;
-
-	resourceURI = resource->uri();
-	cout << "\tURI of the resource: " << resourceURI << endl;
-
-	hostAddress = resource->host();
-	cout << "\tHost address of the resource: " << hostAddress << endl;
-
-	for(auto &resourceTypes : resource->getResourceTypes()) {
-		cout << "resourceType: " << resourceTypes << endl;
-		if( resourceTypes == HG_DISCOVER_RESOUCE_TYPE) {
-
-			OCRepresentation rep;
-			/*
-			uint8_t ifname[] = "eth0";
-			uint8_t ipAddr[20];
-			char address[64] = {0};
-
-			OCGetInterfaceAddress(ifname, sizeof(ifname), AF_INET, ipAddr, sizeof(ipAddr));
-			snprintf(address, sizeof(address), "coap://%s:5683/oc/core?rt=com.intel", (char*)ipAddr);
-
-			*/
-			rep.setValue("name", string("led"));
-			rep.setValue("address", string(LED_EDSN_RESOURCE_TYPE));
-			resource->put(rep, QueryParamsMap(), &onRegister);
+	try {
+		if (!resource) {
+			cout << "Resource is invalid" << endl;
 			return;
 		}
-	}
 
-	return;
+		cout<<"DISCOVERED Resource:"<<endl;
+
+		resourceURI = resource->uri();
+		cout << "\tURI of the resource: " << resourceURI << endl;
+
+		hostAddress = resource->host();
+		cout << "\tHost address of the resource: " << hostAddress << endl;
+
+		for(auto &resourceTypes : resource->getResourceTypes()) {
+			cout << "resourceType: " << resourceTypes << endl;
+			if( resourceTypes == HG_DISCOVER_RESOUCE_TYPE) {
+				OCRepresentation rep;
+				rep.setValue("name", string("led"));
+				rep.setValue("address", string(LED_EDSN_RESOURCE_TYPE));
+				resource->put(rep, QueryParamsMap(), &onRegister);
+				return;
+			}
+		}
+	}
+	catch (OC::OCException& e) {
+		cout << "Exception in foundDiscResource: " << e.what() << endl;
+	}
 }
 
 void ledEdsn::registeration()
@@ -147,12 +144,18 @@ static void onGet(const HeaderOptions& headerOptions,
 		return;
 	}
 
-	rep.getValue("ledColor", setting);
+	try {
+		rep.getValue("ledColor", setting);
 
-	cout << "GET Fan configuration successfully" << endl;
-	cout << "Setting led: " << setting << endl;
+		cout << "GET LED configuration successfully" << endl;
+		cout << "Setting led: " << setting << endl;
 
-	my_led.set_led_setting(setting);
+		my_led.set_led_setting(setting);
+	}
+	catch (OC::OCException& e) {
+		cout << "Exception getting ledColor value in onGet: " << e.what() << endl;
+		return;
+	}
 
 	if (my_led.createResource())
 		my_led.registeration();
@@ -179,8 +182,8 @@ static void foundConfResource(shared_ptr<OCResource> resource)
 	for(auto &resourceTypes : resource->getResourceTypes()) {
 		cout << "resourceType: " << resourceTypes << endl;
 		if (resourceTypes == HG_CONFIGURATION_RESOUCE_TYPE) {
-			QueryParamsMap test;
-			resource->get(test, &onGet);
+			QueryParamsMap params;
+			resource->get(params, &onGet);
 			return;
 		}
 	}
@@ -190,7 +193,7 @@ static void foundConfResource(shared_ptr<OCResource> resource)
 
 void ledEdsn::configuration()
 {
-	cout << "Start configure Edison Fan" << endl;
+	cout << "Start configure Edison LED" << endl;
 
 	try {
 		OCPlatform::findResource("",
