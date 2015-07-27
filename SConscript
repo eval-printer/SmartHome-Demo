@@ -19,6 +19,7 @@
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 Import('env')
+root_dir = './../../../../../'
 
 arduino_simplecs_env = env.Clone()
 ######################################################################
@@ -27,17 +28,17 @@ arduino_simplecs_env = env.Clone()
 arduino_simplecs_env.AppendUnique(CCFLAGS = ['-fpermissive'])
 
 arduino_simplecs_env.PrependUnique(CPPPATH = [
-		env.get('BUILD_DIR') + '/resource/csdk/logger/include',
-		env.get('BUILD_DIR') + '/resource/csdk/stack/include',
-		env.get('BUILD_DIR') + '/resource/oc_logger/include',
-		env.get('BUILD_DIR') + '/extlibs/Ethernet_Shield_W5200',
-		env.get('BUILD_DIR') + '/extlibs/cjson'
+		root_dir + '/logger/include',
+		root_dir + '/stack/include',
+		root_dir + '/logger/include',
+		root_dir + '/../oc_logger/include',
+		root_dir + '/../../extlibs/cjson'
 		])
 
 arduino_simplecs_env.AppendUnique(LIBPATH = [env.get('BUILD_DIR')])
 arduino_simplecs_env.AppendUnique(CPPDEFINES = ['TB_LOG'])
 
-arduino_simplecs_env.PrependUnique(LIBS = ['octbstack', 'connectivity_abstraction','coap'])
+arduino_simplecs_env.PrependUnique(LIBS = ['octbstack', 'connectivity_abstraction','coap', 'EthernetV2'])
 
 arduino_simplecs = arduino_simplecs_env.Program('fan', 'fan.cpp')
 arduino_simplecs_env.Program('prisensor', 'prisensor.cpp')
