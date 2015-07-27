@@ -29,7 +29,7 @@ ledEdsn::ledEdsn() : presenceTimer(0), m_setting(0), inPrecence(false), m_ledRes
 	cout << "Running ledEdsn constructor" << endl;
 	m_platformConfig = make_shared<PlatformConfig>(ServiceType::InProc,
 						ModeType::Both, "0.0.0.0",
-						5683, OC::QualityOfService::HighQos);
+						5683, OC::QualityOfService::LowQos);
 	OCPlatform::Configure(*m_platformConfig);
 
 	m_ledRepresentation.setValue("ledColor", 0);
@@ -157,8 +157,7 @@ static void onGet(const HeaderOptions& headerOptions,
 		return;
 	}
 
-	if (my_led.createResource())
-		my_led.registeration();
+	my_led.registeration();
 }
 
 static void foundConfResource(shared_ptr<OCResource> resource)
@@ -171,13 +170,13 @@ static void foundConfResource(shared_ptr<OCResource> resource)
 		return;
 	}
 
-	cout<<"DISCOVERED Resource:"<<endl;
+	cout<<"DISCOVERED Configuration Resource:"<<endl;
 
 	resourceURI = resource->uri();
-	cout << "\tURI of the resource: " << resourceURI << endl;
+	cout << "\tURI of the configuration resource: " << resourceURI << endl;
 
 	hostAddress = resource->host();
-	cout << "\tHost address of the resource: " << hostAddress << endl;
+	cout << "\tHost address of the configuration resource: " << hostAddress << endl;
 
 	for(auto &resourceTypes : resource->getResourceTypes()) {
 		cout << "resourceType: " << resourceTypes << endl;
@@ -246,7 +245,6 @@ static gboolean do_presence(gpointer user_data)
 
 	if (!_my_led->inPrecence)
 		return false;
-
 	_my_led->notify();
 
 	return true;
@@ -286,7 +284,6 @@ OCEntityHandlerResult ledEdsn::ledEntityHandler(shared_ptr<OCResourceRequest> Re
 
 		Response->setRequestHandle(Request->getRequestHandle());
 		Response->setResourceHandle(Request->getResourceHandle());
-
 		if (requestType == "GET") {
 
 			Response->setErrorCode(200);
@@ -294,13 +291,17 @@ OCEntityHandlerResult ledEdsn::ledEntityHandler(shared_ptr<OCResourceRequest> Re
 			Response->setResourceRepresentation(
 					getRep());
 
-			if (OCPlatform::sendResponse(Response) == OC_STACK_OK) {
-				result = OC_EH_OK;
-				cout << "SendResponse Successfully" << endl;
+			try {
+				if (OCPlatform::sendResponse(Response) == OC_STACK_OK) {
+					result = OC_EH_OK;
+					cout << "SendResponse Successfully" << endl;
+				}
+				else
+					cout << "SendResponse error" << endl;
 			}
-			else
-				cout << "SendResponse error" << endl;
-
+			catch (OC::OCException& e) {
+				cerr << "Exception in ledEntityHandler: " << e.what() << endl;
+			}
 		} else if(requestType == "PUT") {
 			cout << "requestType : PUT" << endl;
 			int setting;
@@ -488,6 +489,9 @@ int main()
 
 	if (initChainableLED() != 0) {
 		cerr << "Failed initializing the LED" << endl;
+	}
+	if (!my_led.createResource()) {
+		cerr << "Failed creating the resource" << endl;
 	}
 	my_led.configuration();
 
