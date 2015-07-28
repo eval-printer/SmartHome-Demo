@@ -32,7 +32,8 @@ arduino_simplecs_env.PrependUnique(CPPPATH = [
 		root_dir + '/stack/include',
 		root_dir + '/logger/include',
 		root_dir + '/../oc_logger/include',
-		root_dir + '/../../extlibs/cjson'
+		root_dir + '/../../extlibs/cjson',
+		root_dir + '/../../extlibs/arduino/arduino-1.5.8/libraries/EthernetV2'
 		])
 
 arduino_simplecs_env.AppendUnique(LIBPATH = [env.get('BUILD_DIR')])
