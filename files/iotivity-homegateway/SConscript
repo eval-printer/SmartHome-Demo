@@ -1,0 +1,5 @@
+Import('env')
+
+a_env = env.Clone()
+a_env.AppendUnique(CPPPATH=['.'])
+a_env.Program('homegateway', ['config_resource.cpp', 'rules_resource.cpp', 'sensor_resource.cpp', 'homegateway.cpp', 'ble_hr_sensor.cpp'])

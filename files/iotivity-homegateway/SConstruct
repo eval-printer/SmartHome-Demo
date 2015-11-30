@@ -1,0 +1,60 @@
+
+'''
+This code injects Yocto cross-compilation flags into scons' default environment
+in order to invoke the relevant tools while performing a build.
+'''
+import os, os.path, re
+sdk_root = ''
+env = DefaultEnvironment()
+try:
+    CC = os.environ['CC']
+    sdk_root = re.search(r'--sysroot=\S+', CC).group().split('=')[1]
+    target_prefix = CC.split()[0]
+    target_prefix = target_prefix[:len(target_prefix)-3]
+    tools = {"CC" : target_prefix+"gcc",
+             "CXX" : target_prefix+"g++",
+             "AS" : target_prefix+"as",
+             "LD" : target_prefix+"ld",
+             "GDB" : target_prefix+"gdb",
+             "STRIP" : target_prefix+"strip",
+             "RANLIB" : target_prefix+"ranlib",
+             "OBJCOPY" : target_prefix+"objcopy",
+             "OBJDUMP" : target_prefix+"objdump",
+             "AR" : target_prefix+"ar",
+             "NM" : target_prefix+"nm",
+             "M4" : "m4",
+             "STRINGS": target_prefix+"strings"}
+    PATH = os.environ['PATH'].split(os.pathsep)
+    for tool in tools:
+        if tool in os.environ:
+            for path in PATH:
+             if os.path.isfile(os.path.join(path, tools[tool])):
+                 env[tool] = os.path.join(path, os.environ[tool])
+except:
+    print "ERROR in Yocto cross-toolchain environment"
+    Exit(1)
+
+'''
+Adding OIC SDK libs and include files.
+'''
+env.AppendUnique(CPPPATH = [
+                sdk_root + '/usr/include/iotivity/resource',
+                sdk_root + '/usr/include/iotivity/resource/stack/',
+                sdk_root + '/usr/include/iotivity/resource/oc_logger/',
+                sdk_root + '/usr/include/glib-2.0/',
+                sdk_root + '/usr/lib/glib-2.0/include/',
+  ])
+env.AppendUnique(CXXFLAGS = ['-std=c++11', '-Wall'])
+#env.ParseConfig('pkg-config --libs --cflags glib-2.0');
+#env.ParseConfig('pkg-config --libs gio-2.0');
+env.AppendUnique(LIBPATH = [sdk_root + '/usr/lib/'])
+env.AppendUnique(LIBS = ['oc', 'octbstack', 'oc_logger', 'coap', 'glib-2.0', 'gio-2.0', 'gobject-2.0'])
+
+Export('env', 'sdk_root')
+
+'''
+Project specific SConscript files go below.
+'''
+SConscript('SConscript', variant_dir='output', duplicate=0)
+
+Return('env')
