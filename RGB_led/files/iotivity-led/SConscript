@@ -1,0 +1,5 @@
+Import('env')
+
+a_env = env.Clone()
+a_env.AppendUnique(CPPPATH=['.'])
+a_env.Program('iotivity-led', 'led_edison.cpp')
